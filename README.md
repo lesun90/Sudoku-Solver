@@ -7,4 +7,4 @@ This program can detect if your input game is an invalid game (unsolvable game)
 ## How to use
 Input your board game data by modify "gameTable" variable in SudokuSolver.java
 
-Complied and run, get a your solved game.
+Complied and run, get a your solved sudoku game.
