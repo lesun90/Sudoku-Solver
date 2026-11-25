@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sudoku Solver &amp; Generator — Play, Create and Solve Sudoku Online</title>
+  <meta name="description" content="Free online Sudoku: generate Easy to Expert puzzles, play with pencil marks and hints, enter your own puzzle, and watch an instant step-by-step solver. No sign-up, works offline.">
+  <meta name="keywords" content="sudoku, sudoku solver, sudoku generator, online sudoku, sudoku puzzle, sudoku hints, pencil marks, custom sudoku, sudoku checker">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="author" content="Sudoku Solver">
+  <meta name="theme-color" content="#f4f0e8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12110f" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="light dark">
+  <meta name="application-name" content="Sudoku Solver">
+  <meta name="apple-mobile-web-app-title" content="Sudoku">
+  <meta name="format-detection" content="telephone=no">
+  <!-- Once hosted, set the real URL here and make og:image / og:url absolute. -->
+  <!-- <link rel="canonical" href="https://example.com/"> -->
+
+  <!-- Open Graph / social cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Sudoku Solver">
+  <meta property="og:title" content="Sudoku Solver &amp; Generator — Play, Create and Solve Sudoku">
+  <meta property="og:description" content="Generate puzzles from Easy to Expert, play with pencil marks and hints, or paste any Sudoku and watch it solved step by step.">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A Sudoku board being solved, with logic and guess placements highlighted.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sudoku Solver &amp; Generator">
+  <meta name="twitter:description" content="Play, create and auto-solve Sudoku in your browser. Instant solver, hints, pencil marks.">
+  <meta name="twitter:image" content="assets/og-image.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Sudoku Solver & Generator",
+    "applicationCategory": "GameApplication",
+    "genre": "Puzzle",
+    "operatingSystem": "Any (web browser)",
+    "browserRequirements": "Requires JavaScript",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "description": "Generate Sudoku puzzles from Easy to Expert, play with pencil marks, hints and error checking, create custom puzzles with uniqueness validation, and auto-solve any grid using constraint propagation and depth-first search.",
+    "featureList": [
+      "Puzzle generator with four difficulty levels",
+      "Unique-solution guarantee",
+      "Pencil marks and automatic candidates",
+      "Step-by-step logical hints",
+      "Custom puzzle editor with live validation",
+      "Animated auto-solver with statistics",
+      "Works offline, no sign-up"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How does the Sudoku solver work?",
+        "acceptedAnswer": { "@type": "Answer", "text": "It keeps pencil marks (candidates) for every empty cell, applies human techniques such as naked singles, hidden singles, locked candidates and naked pairs, and when logic runs out it guesses on the cell with the fewest candidates and backtracks on contradictions (depth-first search)." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I solve my own Sudoku puzzle?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Open the Create tab, type or paste the givens, and the app tells you instantly whether the puzzle has no solution, a unique solution, or several. Press Auto-solve to see the answer." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do generated puzzles have a unique solution?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Always. Each clue is removed only if the puzzle stays uniquely solvable, and Easy to Hard puzzles are guaranteed solvable by logic alone without guessing." }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23181613'/%3E%3Cpath d='M11 4v24M21 4v24M4 11h24M4 21h24' stroke='%23f4f0e8' stroke-width='1.6'/%3E%3Crect x='11' y='11' width='10' height='10' fill='%23e5533d'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body data-mode="play">
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 30 30" aria-hidden="true">
+          <rect x="1" y="1" width="28" height="28" rx="6" />
+          <path d="M10.3 3v24M19.7 3v24M3 10.3h24M3 19.7h24" />
+          <rect class="dot" x="10.3" y="10.3" width="9.4" height="9.4" />
+        </svg>
+        <div>
+          <h1>Sudoku<em>.</em><span class="sr-only"> Solver &amp; Generator</span></h1>
+          <p class="tagline">pencil marks &times; depth-first search</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="guide-btn" type="button" data-guide="" title="Techniques guide (?)">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>
+          <span>Techniques</span>
+        </button>
+        <button id="themeBtn" class="icon-btn" type="button" aria-label="Toggle dark mode" title="Toggle theme">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5a8.5 8.5 0 0 0 0 17z" class="fill"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="stage">
+        <div class="meta">
+          <span id="metaLabel" class="meta-label">Medium</span>
+          <span class="meta-right">
+            <button type="button" class="mini" data-act="copy" title="Copy puzzle as text"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M4 16V5a2 2 0 0 1 2-2h11"/></svg>copy</button>
+            <span id="timer" class="timer">00:00</span>
+          </span>
+        </div>
+        <div class="board-shell">
+          <div id="board" class="board" role="grid" aria-label="Sudoku board"></div>
+          <div id="busy" class="busy" hidden><span></span>Generating</div>
+          <div id="win" class="win" hidden>
+            <div class="win-card">
+              <p class="eyebrow">Solved</p>
+              <p id="winTime" class="win-time">00:00</p>
+              <p id="winSub" class="win-sub"></p>
+              <button class="btn primary" data-act="new" type="button">Next puzzle</button>
+            </div>
+          </div>
+        </div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+        <p id="toast" class="toast" role="status" aria-live="polite"></p>
+      </section>
+
+      <aside class="panel">
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" data-mode="play">Play</button>
+          <button type="button" role="tab" data-mode="create">Create</button>
+          <span class="tab-ink" aria-hidden="true"></span>
+        </div>
+
+        <section class="group only-play">
+          <p class="eyebrow">New game</p>
+          <div class="chips" id="difficulty" role="radiogroup" aria-label="Difficulty">
+            <button type="button" data-diff="easy">Easy</button>
+            <button type="button" data-diff="medium">Medium</button>
+            <button type="button" data-diff="hard">Hard</button>
+            <button type="button" data-diff="expert">Expert</button>
+          </div>
+        </section>
+
+        <section class="group only-create">
+          <p class="eyebrow">Custom puzzle</p>
+          <p id="createStatus" class="create-status">Enter the givens of your puzzle.</p>
+        </section>
+
+        <div id="pad" class="pad" aria-label="Number pad"></div>
+
+        <div class="tools">
+          <button type="button" class="tool" data-act="undo" title="Undo (Ctrl+Z)"><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>Undo</button>
+          <button type="button" class="tool" data-act="redo" title="Redo (Ctrl+Shift+Z)"><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg>Redo</button>
+          <button type="button" class="tool" data-act="erase" title="Erase (Backspace)"><svg viewBox="0 0 24 24"><path d="M20 20H8.5L3.6 15a2 2 0 0 1 0-2.8L13 2.8a2 2 0 0 1 2.8 0l4.4 4.4a2 2 0 0 1 0 2.8L10.5 20"/><path d="m8 9.5 6.5 6.5"/></svg>Erase</button>
+          <button type="button" class="tool only-play" data-act="notes" title="Pencil notes (N)"><svg viewBox="0 0 24 24"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/><path d="m15 5 4 4"/></svg>Notes<span class="flag" id="notesFlag">off</span></button>
+          <button type="button" class="tool only-play" data-act="autonotes" title="Fill all pencil marks (A)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>Marks</button>
+          <button type="button" class="tool only-play" data-act="hint" title="Hint (H)"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-4 11.6c.6.5 1 1.3 1 2.1V17h6v-.8c0-.8.4-1.6 1-2.1a6.5 6.5 0 0 0-4-11.6z"/></svg>Hint</button>
+          <button type="button" class="tool only-play" data-act="check" title="Check entries"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Check</button>
+          <button type="button" class="tool only-play" data-act="restart" title="Restart puzzle"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Restart</button>
+          <button type="button" class="tool only-create" data-act="clear" title="Clear grid"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15"/></svg>Clear</button>
+          <button type="button" class="tool only-create" data-act="import" title="Paste a puzzle string"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg>Import</button>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn" data-act="solve" title="Auto-solve (S)">
+            <svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg>Auto-solve
+          </button>
+          <button type="button" class="btn primary only-play" data-act="new">New game</button>
+          <button type="button" class="btn primary only-create" data-act="play">Play this puzzle</button>
+        </div>
+
+        <section id="report" class="report" hidden>
+          <div class="report-head">
+            <p class="eyebrow">Solver report</p>
+            <button type="button" class="link" data-act="closeReport">Hide</button>
+          </div>
+          <dl class="stats">
+            <div><dt>Time</dt><dd id="rTime">–</dd></div>
+            <div><dt><button type="button" class="term" data-guide="report">Search nodes</button></dt><dd id="rNodes">–</dd></div>
+            <div><dt><button type="button" class="term" data-guide="search">Guesses</button></dt><dd id="rGuesses">–</dd></div>
+            <div><dt><button type="button" class="term" data-guide="report">Dead ends</button></dt><dd id="rDead">–</dd></div>
+          </dl>
+          <div class="mix" id="rMix" aria-hidden="true"></div>
+          <ul class="legend" id="rLegend"></ul>
+          <p class="report-note" id="rNote"></p>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="keys">
+      <span><kbd>1</kbd>–<kbd>9</kbd> place</span>
+      <span><kbd>⇧</kbd>+<kbd>1</kbd>–<kbd>9</kbd> note</span>
+      <span><kbd>N</kbd> notes</span>
+      <span><kbd>H</kbd> hint</span>
+      <span><kbd>S</kbd> solve</span>
+      <span><kbd>?</kbd> techniques</span>
+      <span><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> move</span>
+      <span><kbd>⌫</kbd> erase</span>
+    </footer>
+
+    <section class="about" aria-labelledby="about-title">
+      <h2 id="about-title">A Sudoku solver that thinks like you do</h2>
+      <div class="about-grid">
+        <article>
+          <h3>Generate</h3>
+          <p>Fresh puzzles in four levels. Easy and Medium fall to singles alone, Hard needs locked candidates or pairs, and Expert needs real search. Every puzzle has exactly one solution.</p>
+        </article>
+        <article>
+          <h3>Play</h3>
+          <p>Pencil marks, automatic candidates, undo, error checking and hints that name the technique, such as a naked or hidden single, rather than just showing the answer.</p>
+        </article>
+        <article>
+          <h3>Create</h3>
+          <p>Type or paste any Sudoku from a newspaper, a book or a friend. The editor shows conflicts as you type, then reports whether the puzzle has no solution, one solution or many, and rates its difficulty.</p>
+        </article>
+        <article>
+          <h3>Solve</h3>
+          <p>The auto-solver propagates pencil-mark logic and falls back to depth-first search with backtracking. It fills the board step by step and reports nodes, guesses and techniques used.</p>
+        </article>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="noscript">This Sudoku player, generator and solver runs entirely in your browser and needs JavaScript enabled.</p>
+    </noscript>
+  </div>
+
+  <dialog id="guideDlg" class="dialog guide" aria-labelledby="guide-title">
+    <header class="guide-head">
+      <div>
+        <p class="eyebrow">Learn</p>
+        <h2 id="guide-title">Sudoku techniques</h2>
+      </div>
+      <form method="dialog"><button class="icon-btn close" aria-label="Close guide" title="Close (Esc)">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button></form>
+      <nav class="guide-nav" aria-label="Guide sections">
+        <a href="#g-basics">Basics</a>
+        <a href="#g-naked">Naked single</a>
+        <a href="#g-hidden">Hidden single</a>
+        <a href="#g-pointing">Pointing</a>
+        <a href="#g-claiming">Claiming</a>
+        <a href="#g-pair">Naked pair</a>
+        <a href="#g-search">Guessing</a>
+        <a href="#g-difficulty">Difficulty</a>
+        <a href="#g-report">Report terms</a>
+      </nav>
+    </header>
+
+    <div class="guide-body" tabindex="-1" autofocus>
+      <section class="g-item" id="g-basics">
+        <div class="g-fig"><div class="dg" data-diagram="units"></div></div>
+        <div class="g-text">
+          <h3>Units, peers &amp; candidates</h3>
+          <p>A <b>unit</b> is a row, a column or a 3×3 box. Each digit 1–9 appears exactly once in every unit.</p>
+          <p>The cells that share a unit with a cell are its <b>peers</b>. Every cell has 20 of them, shaded in the diagram.</p>
+          <p><b>Candidates</b>, also called <b>pencil marks</b>, are the small digits that could still go in an empty cell: every digit not already used by one of its peers. Every technique below works by crossing candidates out.</p>
+          <p class="g-tip">To write your own marks, press <kbd>N</kbd> or hold <kbd>⇧</kbd> while typing a digit. <b>Marks</b> fills them all in for you.</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-naked">
+        <div class="g-fig"><div class="dg" data-diagram="naked"></div></div>
+        <div class="g-text">
+          <h3>Naked single</h3>
+          <p>A cell has <b>only one candidate left</b>. Every other digit is already used in its row, column or box, so that last digit must go there.</p>
+          <p class="g-eg">In the diagram, the centre cell can only be <b>4</b>.</p>
+          <p class="g-tip">This is the easiest technique to spot once pencil marks are filled in: look for a cell with a single small digit.</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-hidden">
+        <div class="g-fig"><div class="dg" data-diagram="hidden"></div></div>
+        <div class="g-text">
+          <h3>Hidden single</h3>
+          <p>Within one row, column or box, a digit fits in <b>only one cell</b>. The digit must go there, even if that cell still has other candidates. That is why the single is "hidden".</p>
+          <p class="g-eg">In this row, <b>6</b> appears among the candidates of only one cell, so that cell is 6.</p>
+          <p class="g-tip">Scan one unit at a time and ask, for each missing digit, "where can it go?"</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-pointing">
+        <div class="g-fig"><div class="dg" data-diagram="pointing"></div></div>
+        <div class="g-text">
+          <h3>Locked candidates: pointing</h3>
+          <p>Inside a box, every candidate for a digit sits in a <b>single row or column</b>. The box must put that digit somewhere on that line, so the rest of the line cannot have it.</p>
+          <p class="g-eg">In the left box, <b>4</b> can only go in the top row. Cross 4 out of the rest of that row (red).</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-claiming">
+        <div class="g-fig"><div class="dg" data-diagram="claiming"></div></div>
+        <div class="g-text">
+          <h3>Locked candidates: claiming</h3>
+          <p>The reverse of pointing. Inside a row or column, every candidate for a digit sits in a <b>single box</b>. The line claims that digit for itself, so the rest of that box cannot have it.</p>
+          <p class="g-eg">In the middle row, <b>7</b> can only go in the right box. Cross 7 out of that box's other rows.</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-pair">
+        <div class="g-fig"><div class="dg" data-diagram="pair"></div></div>
+        <div class="g-text">
+          <h3>Naked pair</h3>
+          <p>Two cells in the same unit have <b>exactly the same two candidates</b>. Between them, they will use both digits, so no other cell in that unit can have either one.</p>
+          <p class="g-eg">The two {2, 8} cells take 2 and 8, so cross both digits out of the rest of the row.</p>
+        </div>
+      </section>
+
+      <section class="g-item" id="g-search">
+        <div class="g-fig">
+          <div class="tree" aria-hidden="true">
+            <div class="t-node root">R5C3 <span>{3, 8}</span><small>fewest candidates</small></div>
+            <div class="t-branches">
+              <div class="t-branch bad"><span class="t-edge">try 3</span><div class="t-node">propagate&hellip;<br>a cell runs out of candidates</div><em>dead end &#8617;</em></div>
+              <div class="t-branch ok"><span class="t-edge">try 8</span><div class="t-node">propagate&hellip;<br>every cell filled</div><em>solved &check;</em></div>
+            </div>
+          </div>
+        </div>
+        <div class="g-text">
+          <h3>Guessing (search &amp; backtracking)</h3>
+          <p>When no technique makes progress, the solver <b>guesses</b>. It picks the cell with the <b>fewest candidates</b> (usually two) and tries one of them. Then it applies all the techniques again.</p>
+          <p>If that leads to a <b>contradiction</b> (a cell with no candidates left, or a digit with nowhere to go), the guess was wrong. The solver <b>backtracks</b> to the guess and tries the next candidate.</p>
+          <p class="g-tip">On the board, teal cells were placed after a guess. Hints never guess. When no single is available, a hint reveals the cell the solver would branch on.</p>
+        </div>
+      </section>
+
+      <section class="g-item g-wide" id="g-difficulty">
+        <div class="g-text">
+          <h3>Difficulty levels</h3>
+          <ul class="g-levels">
+            <li><b>Easy</b><span>Naked and hidden singles are enough. Many givens (36–40).</span></li>
+            <li><b>Medium</b><span>Singles only, but fewer givens (28–32), so they are harder to spot.</span></li>
+            <li><b>Hard</b><span>Needs locked candidates or naked pairs. No guessing.</span></li>
+            <li><b>Expert</b><span>None of the techniques here can finish it. The solver has to guess.</span></li>
+          </ul>
+          <p class="g-tip">Every generated puzzle has exactly <b>one</b> solution. In Create mode, puzzles you enter are checked and rated the same way.</p>
+        </div>
+      </section>
+
+      <section class="g-item g-wide" id="g-report">
+        <div class="g-text">
+          <h3>Solver report terms</h3>
+          <dl class="g-terms">
+            <dt>Givens / clues</dt><dd>The digits the puzzle starts with.</dd>
+            <dt>Search nodes</dt><dd>Positions the solver examined. 1 means logic alone solved it.</dd>
+            <dt>Guesses</dt><dd>Candidates the solver tried during search.</dd>
+            <dt>Dead ends</dt><dd>Guesses that led to a contradiction and were undone.</dd>
+            <dt>Search depth</dt><dd>The most guesses stacked on top of each other at once.</dd>
+            <dt>Eliminations</dt><dd>How often pointing, claiming or naked pairs removed candidates.</dd>
+            <dt>Unique solution</dt><dd>Exactly one valid completion exists. A proper Sudoku always has one.</dd>
+          </dl>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <dialog id="importDlg" class="dialog">
+    <form method="dialog">
+      <p class="eyebrow">Import puzzle</p>
+      <p class="dialog-sub">Paste 81 cells. Digits are givens; <code>0</code>, <code>.</code> or <code>_</code> are blanks. Spaces, line breaks and grid borders are ignored.</p>
+      <textarea id="importText" rows="6" spellcheck="false" placeholder="53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79"></textarea>
+      <p id="importErr" class="dialog-err"></p>
+      <div class="dialog-actions">
+        <button type="submit" value="cancel" class="btn">Cancel</button>
+        <button type="submit" value="ok" class="btn primary" id="importOk">Load</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="src/core/solver.js"></script>
+  <script src="src/core/generator.js"></script>
+  <script src="src/ui/app.js"></script>
+</body>
+</html>
