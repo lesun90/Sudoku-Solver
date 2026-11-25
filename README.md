@@ -44,6 +44,7 @@ Everything is plain `<script>` tags with no ES modules, so the page also works f
 index.html              page shell, SEO metadata
 assets/css/style.css    all styling (light + dark themes)
 assets/og-image.png     social preview card
+assets/screenshot.png   README screenshot
 src/core/solver.js      core solver: no DOM, works in browser, Node and JavaScriptCore
 src/core/generator.js   puzzle generator built on the solver
 src/ui/app.js           UI: board, play / create modes, hints, animation
@@ -160,5 +161,5 @@ SudokuGenerator.generate('hard', { seed: 42 })
 `index.html` includes a descriptive title and meta description, Open Graph and Twitter cards, and JSON-LD structured data (`WebApplication` and `FAQPage`). It also has crawlable feature copy and a `<noscript>` fallback. Once you have a domain:
 
 1. Uncomment `<link rel="canonical">` in `index.html` and set your URL.
-2. Change `og:image`, `twitter:image` and `og:url` to **absolute** URLs. Social crawlers ignore relative ones.
+2. Change `og:image` and `twitter:image` to **absolute** URLs and add an absolute `og:url`. Social crawlers ignore relative ones.
 3. Optionally add `robots.txt` and `sitemap.xml` at the site root.

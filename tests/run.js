@@ -126,7 +126,7 @@ log('generator');
       ok(isValidSolution(p.solution, p.puzzle), 'solution matches');
       var tier = Core.grade(p.puzzle).tier;
       log('       seed ' + seed + ': ' + p.clues + ' clues, tier ' + tier + ', ' + p.attempts + ' attempt(s), ' + p.ms + ' ms');
-      ok(tier >= Gen.PRESETS[d].minTier || d === 'expert', 'tier ' + tier);
+      ok(tier >= Gen.PRESETS[d].tier || d === 'expert', 'tier ' + tier);
       if (d === 'easy' || d === 'medium') eq(tier, 1, 'singles only');
     }
   });

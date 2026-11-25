@@ -109,9 +109,8 @@
   const shownValue = (i) => (ui.mode === 'play' ? play.values[i] : draft.values[i] || draft.overlay[i]);
 
   let toastTimer = 0;
-  const TERM_NAMES = {
-    naked: 'naked single', hidden: 'hidden single', search: 'guessing', pointing: 'pointing',
-    claiming: 'claiming', pair: 'naked pair', basics: 'candidates', difficulty: 'difficulty', report: 'report terms',
+  const TERM_LINKS = {
+    naked: 'What is a naked single?', hidden: 'What is a hidden single?', search: 'How does guessing work?',
   };
   function toast(msg, isErr, term) {
     const el = $('#toast');
@@ -121,8 +120,7 @@
       b.type = 'button';
       b.className = 'link toast-link';
       b.dataset.guide = term;
-      b.textContent = 'What is a ' + TERM_NAMES[term] + '?';
-      if (term === 'search') b.textContent = 'How does guessing work?';
+      b.textContent = TERM_LINKS[term];
       el.append(' ', b);
     }
     el.classList.toggle('err', !!isErr);
@@ -201,7 +199,7 @@
     setDisabled('clear', !!ui.anim || !countClues(draft.values));
     setDisabled('play', !!ui.anim || !draft.unique);
     setDisabled('new', ui.busy);
-    const solveBtn = document.querySelector('.btn[data-act="solve"]');
+    const solveBtn = $('.btn[data-act="solve"]');
     solveBtn.classList.toggle('running', !!ui.anim);
     solveBtn.lastChild.textContent = ui.anim ? 'Skip' : 'Auto-solve';
 
@@ -739,14 +737,9 @@
   }
 
   function openImport() {
-    const dlg = $('#importDlg');
     $('#importErr').textContent = '';
     $('#importText').value = '';
-    if (dlg.showModal) dlg.showModal();
-    else {
-      const s = prompt('Paste an 81-character puzzle');
-      if (s) importString(s);
-    }
+    $('#importDlg').showModal();
   }
   function importString(s) {
     let g;

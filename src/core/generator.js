@@ -19,10 +19,10 @@
   'use strict';
 
   const PRESETS = {
-    easy:   { tier: 1, clues: [36, 40], minTier: 1, attempts: 6 },
-    medium: { tier: 1, clues: [28, 32], minTier: 1, attempts: 6 },
-    hard:   { tier: 2, clues: [22, 26], minTier: 2, attempts: 40 },
-    expert: { tier: 3, clues: [17, 17], minTier: 3, attempts: 60 },
+    easy:   { tier: 1, clues: [36, 40], attempts: 6 },
+    medium: { tier: 1, clues: [28, 32], attempts: 6 },
+    hard:   { tier: 2, clues: [22, 26], attempts: 40 },
+    expert: { tier: 3, clues: [17, 17], attempts: 60 },
   };
 
   function randomSolution(rng) {
@@ -66,8 +66,8 @@
       const solution = randomSolution(rng);
       const puzzle = carve(solution, preset, rng);
       const g = Core.grade(puzzle);
-      const cand = { puzzle, solution, difficulty, clues: g.clues, tier: g.tier, guesses: g.stats.guesses, attempts: attempt };
-      if (g.tier >= preset.minTier) { best = cand; break; }
+      const cand = { puzzle, solution, difficulty, clues: g.clues, tier: g.tier, attempts: attempt };
+      if (g.tier >= preset.tier) { best = cand; break; }
       if (!best || cand.tier > best.tier || (cand.tier === best.tier && cand.clues < best.clues)) best = cand;
     }
     best.ms = Date.now() - t0;

@@ -500,8 +500,8 @@
   }
 
   return {
-    ROW, COL, BOX, UNITS, PEERS, ALL,
-    bit, digitsOf, popcount: (m) => POP[m],
+    ROW, COL, BOX, PEERS,
+    popcount: (m) => POP[m],
     toGrid, toString, findConflicts, candidates,
     solve, countSolutions, logicSolve, grade, nextStep,
     cellName, shuffle, rng,
